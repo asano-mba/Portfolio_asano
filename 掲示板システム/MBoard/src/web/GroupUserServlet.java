@@ -28,6 +28,7 @@ public class GroupUserServlet extends HttpServlet{
 		ArrayList<GroupMemberInfoBean> memberGrouplist = new ArrayList<GroupMemberInfoBean>();
 
 		int UserId = 0;
+		UserInfoBean uib = new UserInfoBean();
 		//sessionの開始
 		HttpSession session=req.getSession(true);
 
@@ -37,15 +38,19 @@ public class GroupUserServlet extends HttpServlet{
 		case "編集":
 			//送られてきたユーザーIDを取得
 			UserId = Integer.parseInt(req.getParameter("userId"));
+			//ユーザーIDを基にユーザー情報を取得
+			uib = dao.SelectMember(UserId);
 			//DBのグループ情報すべてを配列に格納
 			grouplist.addAll(dao.GetAllGroups());
 			try {
 				//対象ユーザーの所属グループ一覧を取得し配列に格納
 				memberGrouplist.addAll(dao.GetMyGroups(UserId));
+				//System.out.println(memberGrouplist.size());
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
-			//ユーザーの所属グループとグループ一覧をセッションに保存
+			//ユーザーの所属グループとグループ一覧とユーザー情報をセッションに保存
+			session.setAttribute("userInfo", uib);
 			session.setAttribute("memberGroupList", memberGrouplist);
 			session.setAttribute("groupList", grouplist);
 			//遷移先へ

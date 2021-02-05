@@ -38,4 +38,35 @@ $(function(){
 		$(".popup-board-property").fadeOut(100);
 	});
 
+	//定型文プロパティを開く
+	$(".template-menu").click(function(){
+		$(".popup-template-property").fadeIn(100);
+	});
+
+	//定型文プロパティを閉じる
+	$(".link-hide").click(function(){
+		$(".popup-template-property").fadeOut(100);
+	});
+
+});
+
+
+//掲示板退出ポップアップ表示
+//掲示板詳細プロパティの「掲示板を退出」押下時に呼び出し
+function popUp() {
+	$(".popup-board-property").fadeOut(100);
+	$('#boardPop').fadeIn();
+}
+function postFormPopUp() {
+	$('#postPop').fadeIn();
+}
+function popUpClose() {
+	$('.js-modal').fadeOut();
+}
+$(function() {
+	$('.js-modal-close').on('click', function() {
+
+		$('.js-modal').fadeOut();
+		return false;
+	});
 });

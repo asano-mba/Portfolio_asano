@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import data.DAO;
 import data.TemplateInfoBean;
 
+@WebServlet("/template")
 public class TemplateServlet extends HttpServlet {
 
 	@Override
@@ -39,14 +41,7 @@ public class TemplateServlet extends HttpServlet {
 		String tempContent = req.getParameter("tempContent");
 
 		//セッションからログイン中のユーザーIDをいれる(現状はデバック用に10を格納)
-		int userId=10;
-
-		//デバック用
-		System.out.println(action);
-		System.out.println(tempId);
-		System.out.println(tempUserId);
-		System.out.println(tempName);
-		System.out.println(tempContent);
+		int userId=11;
 
 		//更新メッセージ用のセッションを定義
 		session.setAttribute("notice", "");
@@ -59,7 +54,6 @@ public class TemplateServlet extends HttpServlet {
 				session.setAttribute("notice", "定型文を削除しました");
 				break;
 			case "作成":
-				System.out.println("作成");
 				tempContent=tempContent.replace("\r\n", "\\n");
 				bean.setTempleUserId(userId);
 				bean.setTempleName(tempName);
@@ -68,13 +62,13 @@ public class TemplateServlet extends HttpServlet {
 				session.setAttribute("notice", "定型文を追加しました");
 				break;
 			case "更新":
-				System.out.println("更新");
 				tempContent=tempContent.replace("\r\n", "\\n");
 				bean.setTempleId(Integer.parseInt(tempId));
 				bean.setTempleName(tempName);
 				bean.setTempleContents(tempContent);
 				dao.UpdateTemplate(bean);
-				session.setAttribute("notice", "定型文を更新しました");
+				session.setAttribute("notice", "変更を保存しました");
+	//↑文言修正
 				break;
 			default:
 				;
@@ -84,8 +78,6 @@ public class TemplateServlet extends HttpServlet {
 		TemplateInfoList=dao.GetTemplates(userId);
 		//リストをセッションに格納
 		session.setAttribute("TemplateInfoList", TemplateInfoList);
-
-
 
 		//定型文画面に遷移
 		rd = req.getRequestDispatcher("/src/jsp/template.jsp");

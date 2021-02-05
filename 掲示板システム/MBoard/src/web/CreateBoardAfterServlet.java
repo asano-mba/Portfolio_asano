@@ -17,7 +17,7 @@ import data.DAO;
 
 //Create_Board.jspから送られたフォームデータをDBに追加するServlet
 @WebServlet(urlPatterns = {"/createBoardAfter", "/editBoardAfter"})
-@MultipartConfig(location="C:\\Users\\MBA\\Documents\\MBA-Training-Deliverables\\MBoard\\WebContent\\src\\img/board")
+@MultipartConfig(location="D:\\個人データ\\MBA-Training-Deliverables\\MBoard\\WebContent\\src\\img\\board")
 public class CreateBoardAfterServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -28,7 +28,8 @@ public class CreateBoardAfterServlet extends HttpServlet {
 		} else {
 			DAO d = new DAO();
 			//画像を格納するパス
-			String ImgPath = "C:\\Users\\MBA\\Documents\\MBA-Training-Deliverables\\MBoard\\WebContent\\src\\img\\board";
+			String ImgPath = "D:\\個人データ\\MBA-Training-Deliverables\\MBoard\\WebContent\\src\\img\\board";
+					//getServletContext().getRealPath("/src/img/board");
 			//掲示板名（画像の名前を掲示板名と同一にする）
 			String Name = req.getParameter("Board_Category");
 			Part part = req.getPart("board-icon");
@@ -57,7 +58,7 @@ public class CreateBoardAfterServlet extends HttpServlet {
 			if(req.getParameter("pageType").equals("create")) {
 				//掲示板の作成
 				d.CreateBoard(bib, userId);
-				System.out.println("Cerate board.");
+				//System.out.println("Cerate board.");
 				//urlの指定
 				url = "src/jsp/board.jsp#board-list-link";
 			}
@@ -66,7 +67,7 @@ public class CreateBoardAfterServlet extends HttpServlet {
 				bib.setBoardId(Integer.parseInt(req.getParameter("Board_ID")));
 				d.UpdateBoard(bib);
 				d.UpdatePermmisioinMembers(bib.getBoardId(), userId);
-				System.out.println("Edit board.");
+				//System.out.println("Edit board.");
 
 
 				//urlの指定

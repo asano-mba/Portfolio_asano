@@ -8,11 +8,14 @@
 .alarm{
 	position:absolute;
 	 margin-left:50%;
-	 margin-top:2%;
-	 padding:3px 20px;
-	 transform: translate(-50%, -50%); /*基準を中央にする*/
-	 background-color:#252525;
-	 color:#fff;
+	 margin-top:15px;
+	 transform: translateX(-50%); /*基準を中央にする*/
+	z-index: 5;
+	background:white;
+	border-radius:8px;
+	color:black;
+	box-shadow: 0 0px 10px 0 rgba(0, 0, 0, .4);
+	padding:5px 50px;
 }
 
 .profile_area{
@@ -129,7 +132,7 @@ input[name="tab_item"] {
 	padding:0px 0px 0;
 	clear:both;
 	overflow:hidden;
-	height:1000px;
+
 }
 
 .post_area{
@@ -138,6 +141,14 @@ input[name="tab_item"] {
 	height:250px;
 	margin-bottom:10px;
 	border-radius:8px;
+}
+
+.profile_area{
+	background:white;
+	box-sizing:border-box;
+	padding:20px ;
+	border-radius:8px;
+	margin-top:16px;
 }
 
 .icon_area{

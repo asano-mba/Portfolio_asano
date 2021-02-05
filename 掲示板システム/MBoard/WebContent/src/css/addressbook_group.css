@@ -14,15 +14,17 @@ h1{
 	background-color: #fff;
 	border-radius:8px;
 	display: table;
-	margin: 20px 0;
+	margin: 20px 20px;
 	padding: 0px 4px;
 }
 
-.addresandgroup{
-	padding:20px ;
-	width: 1050px;
-}
 
+.addresandgroup{
+
+	width:calc(100vw - 80px);
+	border-radius:0 0 0 0 ;
+
+}
 
 
 
@@ -30,11 +32,14 @@ h1{
 
 .tabs {
 	margin-top:10px;  /* 50px */
+	margin-left:auto;
+	margin-right:auto;
+
 	padding-bottom:40px;
 	/* background-color:#fff; */
 	width:100%;  /* 500px */
 	min-width: 500px;
-	max-width:calc(100vw - 80px);
+	max-width:1000px;
 	/* margin:10px auto 0 auto; */
 }
 
@@ -91,7 +96,7 @@ input[name="tab_item"] {
 	clear:both;
 	overflow:hidden;
 	height:100%;
-	width:1050px;
+	width: 100%;
 }
 
 /*--------アドレスの内容--------*/
@@ -102,14 +107,6 @@ input[name="tab_item"] {
 	margin:10px 0px;  /*左右を0に変更*/;
 	padding:10px;
 	border-radius:8px;
-}
-
-/* 検索窓の位置は仮で設定してあります（要調整） */
-.serch {
-	position: absolute;
-	top: 110px;
-	left: 850px;
-	margin: 5px 10px;
 }
 
 .address {
@@ -131,19 +128,6 @@ input[name="tab_item"] {
 .user_information_area:hover {
 	opacity: 0.75;
 }
-
-/* 使用していないタグのためコメントアウト
-.user_information{
-	display:flex;
-	align-items:center;
-	justify-content:center;
-	display: block;
-	font-family:sans-serif;
-	font-weight:bold;
-	font-size:15px;
-	margin: auto;
-	background:red;
-} */
 
 .user_name{
 	font-family: sans-serif;
@@ -174,6 +158,7 @@ input[name="tab_item"] {
 }
 
 .group_tab{
+	position:  relative;
 	padding:5px 20px;
 	border-radius:8px
 }
@@ -193,8 +178,59 @@ input[name="tab_item"] {
 .box input[type="checkbox"].on-off +div{
 	display: none;
 }
-
 .box input[type="checkbox"].on-off:checked +div{
 	display: block;
 }
 
+
+
+
+/*--------↓検索用--------*/
+.serch {
+	position: absolute;
+	top: 100px;
+
+	margin: 5px 800px;
+	font-size:20px;
+	transform: translateX(-50%);
+    border-radius:8px;
+
+	background-image:url(../img/mb_d_search2.png);
+	background-repeat:  no-repeat;
+	background-position:right;
+}
+
+.search-result {
+	display: none;
+}
+
+#none{
+	color:#ff0000;
+    text-align:center;
+    font-size:22px;
+}
+
+/* ↓三角矢印 */
+
+#arrowOn{
+  display: none;
+  position: absolute;
+  bottom:30px;
+  left:200px;
+  width: 15px;
+  height: 15px;
+  border: 2px solid;
+  border-color:  transparent transparent #565656 #565656;
+  transform: rotate(-45deg);
+}
+#arrowOff{
+  display: block;
+  position: absolute;
+  bottom:20px;
+  left:200px;
+  width: 15px;
+  height: 15px;
+  border: 2px solid;
+  border-color: #565656 #565656 transparent transparent;
+  transform: rotate(-45deg);
+}

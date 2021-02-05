@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"
-	import = "data.TemplateInfoBean"
+	import = "data.TemplateInfoBean,data.UserInfoBean"
 	import ="java.util.ArrayList"%>
 	<!DOCTYPE html>
 <html>
@@ -14,11 +14,16 @@
 </head>
 <body>
 <%
+//ログインユーザー情報をセッションから取得
+UserInfoBean myb = (UserInfoBean)session.getAttribute("userInfoBean");
+//ログインユーザーの定型文情報をセッションからリスト配列で取得
 ArrayList<TemplateInfoBean> TemplateInfoList=new ArrayList<TemplateInfoBean>();
 TemplateInfoList=(ArrayList<TemplateInfoBean>)session.getAttribute("TemplateInfoList");
+//定型分情報を格納する変数を宣言
 Integer tempId[] = new Integer[10];
 String tempName[] = new String[10];
 String tempContent[] = new String[10];
+//定型分情報を代入
 int i=0;
 for(TemplateInfoBean bean:TemplateInfoList) {
 	tempId[i]=bean.getTempleId();
@@ -62,26 +67,26 @@ var tempContent ={
 				<img src="src/img/logo_white.png">
 			</div>
 
-			<a href="#">
-				<img src="src/img/mb_0_link.png" class="nav-icon">
-			</a>
-			<a href="#">
-				<img src="src/img/mb_0_boad.png" class="nav-icon">
-			</a>
-			<a href="#">
-				<img src="src/img/mb_0_address.png" class="nav-icon">
-			</a>
-			<a href="#">
-				<img src="src/img/mb_0_link.png" class="nav-icon" id="link-show">
-			</a>
+			 <form name="nav-trans" method="post">
+
+			<input type="image" src="<%=request.getContextPath()%><%= myb.getProfileImgPath() %>" class="nav-icon"
+			id="my-icon" formaction="<%=request.getContextPath()%>/mypage">
+
+			<input type="image" src="<%=request.getContextPath()%>/src/img/mb_0_boad.png" class="nav-icon"
+			formaction="<%=request.getContextPath()%>/board">
+
+			<input type="image" src="<%=request.getContextPath()%>/src/img/mb_0_address.png" class="nav-icon"
+			formaction="<%=request.getContextPath()%>/addressbook">
+
+			<%-- 外部リンク一覧のポップアップを出すだけなので遷移先なし --%>
+			<img src="<%=request.getContextPath()%>/src/img/mb_0_link.png" class="nav-icon" id="link-show">
+			</form>
 
 			<div class="nav-bottom">
-				<a href="#">
-				<img src="src/img/mb_0_notice.png" class="nav-icon">
-				</a>
-				<a href="#">
-				<img src="src/img/mb_0_other.png" class="nav-icon">
-				</a>
+				<%-- 通知のポップアップを出すだけなので遷移先なし --%>
+				<img src="<%=request.getContextPath()%>/src/img/mb_0_notice.png" class="nav-icon">
+				<%-- その他のポップアップを出すだけなので遷移先なし --%>
+				<img src="<%=request.getContextPath()%>/src/img/mb_0_other.png" class="nav-icon" id="link-botoom-show">
 			</div>
 		</div>
 
@@ -89,33 +94,44 @@ var tempContent ={
 			<div class="link-hide popup-bg"></div>
 			<div class="popup-content">
 				<div class="popup-icon">
-				<img src="src/img/mb_0_attendance.png">
-				<img src="src/img/mb_0_attendance.png">
-				<img src="src/img/mb_0_attendance.png">
-				<img src="src/img/mb_0_attendance.png">
-				<img src="src/img/mb_0_attendance.png">
+					<img src="<%=request.getContextPath()%>/src/img/mb_0_LINEWORKS.png">
+					<img src="<%=request.getContextPath()%>/src/img/mb_0_calendar.png">
+					<img src="<%=request.getContextPath()%>/src/img/mb_0_attendance.png">
+					<img src="<%=request.getContextPath()%>/src/img/mb_0_drive.png">
+					<img src="<%=request.getContextPath()%>/src/img/mb_0_mail.png">
+				</div>
 			</div>
+		</div>
+
+		<div class="popup-bottom-link">
+			<div class="link-hide popup-bg"></div>
+			<div class="popup-content">
+				<div class="popup-icon">
+					<img src="<%=request.getContextPath()%>/src/img/mb_0_config.png">
+					<img src="<%=request.getContextPath()%>/src/img/mb_0_signout.png">
+				</div>
 			</div>
 		</div>
 
 
 	<script src="src/js/nav.js"></script>
 
-		<div class=top>
-			<h1 class=title>定型文編集画面</h1>
+		<div class="top">
+<!-- 修正箇所 --><h1 class=title>定型文編集</h1>
 		 	<p class="notice"><%out.print(session.getAttribute("notice"));%></p>
-			<form class="back_button"><input type="button" value="戻る" ></form>
+<!-- 修正箇所 --><form action = "http://localhost:8080/MBoard/board"method="get" class="back_button"><input type="submit" class="backbtn" value="戻る" ></form>
 		</div>
 
-	<div class=template>
+	<div class="template">
 		<div class="template_list">
 			<p >定型文一覧</p>
 			<table id="table" border="1"  >
 			    <tr class=foot>
-				        <td>
-				            <input type="button" value="＋" id="coladd" onclick="coladd()">
+				        <td colspan="1">
+<!-- 修正箇所 -->
+							<img id="coladd" src="<%=request.getContextPath()%>/src/img/mb_e_plus.png" onclick="coladd()">
 				        </td>
-				        <td  colspan="2">
+				        <td colspan="4">
 				            定型文を追加
 				        </td>
 			    	</tr>
@@ -124,10 +140,10 @@ var tempContent ={
 
 		<div class="change_area">
 			 <form action="template" method="post" name="form" id="save">
-			 <input id="template_title" type="text" placeholder="定型文名前"  value="" name="tempName"><br>
-			 <textarea id="template_content"  placeholder="定型文内容"  name="tempContent"  wrap="hand"></textarea><br>
+			 <input id="template_title" type="text" placeholder="タイトル"  value="" name="tempName"><br>
+			 <textarea id="template_content"  placeholder="本文を入力"  name="tempContent"  wrap="soft"></textarea><br>
 			 <input class="template_save" type="submit" value="保存" >
-			 <input type="hidden"  name="action" id="saveAction" value="" >
+			 <input type="hidden"  name="action" id="saveAction" value="" class="notice">
 	      	 <input type="hidden" id="saveHidden" name="tempId" value="" >
 			 <input class="template_soufu" type="button" value="添付" >
 			 <input class="template_kakou" type="button" value="加工" >
@@ -139,11 +155,11 @@ var tempContent ={
 		 <div class="modal js-modal">
 		     <div class="modal__bg js-modal-close"></div>
 		     <div class="modal__content">
-				<p>本当に削除してもよろしいですか</p>
-				<input type="button" value="キャンセル" class="js-modal-close"  onclick="popUpClose()">
-				<form action="template" method="post" name="form" id="delete" >
-					<input type="submit" value="OK"  id="" >
-					<input type="hidden"  name="action" id="deleteAction" value="" >
+<!-- 修正箇所 --><h2>本当に削除してもよろしいですか？</h2>
+				<input type="button" value="キャンセル" class="js-modal-close modal_cancel"  onclick="popUpClose()">
+				<form action="template" method="post" name="form" id="delete" class="modal_form" >
+					<input type="submit" value="OK"  id="" class="modal_ok">
+					<input type="hidden"  name="action" id="deleteAction" value="" class="notice">
 	      			<input type="hidden" id="deleteHidden" name="tempId" value="" >
 				</form>
 		     </div>
@@ -227,6 +243,8 @@ setTimeout(function(){    //x秒後に実行
 				var cell3 = row.insertCell();
 				//クラスを追加
 				cell1.className = 'template_Column';
+				//セル結合
+				cell1.colSpan = 3;
 
 				//行数と
 				rowCount++;
@@ -235,8 +253,8 @@ setTimeout(function(){    //x秒後に実行
 				if(deleteList.length>0){
 					deleteList.sort();
 					cell1.innerHTML = tempName[deleteList[0]];
-					cell2.innerHTML = '<input type="button" value="編集"  id='+deleteList[0]+' onclick="edit(this)">';
-					cell3.innerHTML =  '<input type="button" value="削除"  id='+deleteList[0]+' onclick="popUp(this)">';
+					cell2.innerHTML = '<input type="button" value="編集" class="list_edit"  id='+deleteList[0]+' onclick="edit(this)">';
+					cell3.innerHTML =  '<input type="button" value="削除" class="list_delete" id='+deleteList[0]+' onclick="popUp(this)">';
 					deleteList.shift();
 				}else{
 					if(tempName["edit"+rowCount]=="null"){
@@ -244,8 +262,8 @@ setTimeout(function(){    //x秒後に実行
 					}else{
 						cell1.innerHTML =  '<input type="text" placeholder="定型文名前" value="'+tempName['edit'+rowCount]+'" readonly id='+"edit"+rowCount+"name"+' >';
 					}
-					cell2.innerHTML = '<input type="button" value="編集"  id='+"edit"+rowCount+' onclick="edit(this)">';
-					cell3.innerHTML =  '<input type="button" value="削除"  id='+"edit"+rowCount+' onclick="popUp(this)">';
+					cell2.innerHTML = '<input type="button" value="編集" class="list_edit" id='+"edit"+rowCount+' onclick="edit(this)">';
+					cell3.innerHTML =  '<input type="button" value="削除" class="list_delete" id='+"edit"+rowCount+' onclick="popUp(this)">';
 				}
 			}
 		}

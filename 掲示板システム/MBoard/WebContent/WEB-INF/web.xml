@@ -19,12 +19,12 @@
   </filter-mapping>
 
  <servlet>
-  	<servlet-name>sample</servlet-name>
-  	<servlet-class>web.GroupEditServlet</servlet-class>
+  	<servlet-name>test</servlet-name>
+  	<servlet-class>web.BoardDetailServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-  	<servlet-name>sample</servlet-name>
-  	<url-pattern>/sample</url-pattern>
+  	<servlet-name>test</servlet-name>
+  	<url-pattern>/test</url-pattern>
   </servlet-mapping>
 
   <servlet>
@@ -79,6 +79,15 @@
   <servlet-mapping>
   	<servlet-name>postDetail</servlet-name>
   	<url-pattern>/postDetail</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+  	<servlet-name>articleEdit</servlet-name>
+  	<servlet-class>web.ArticleEditServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>articleEdit</servlet-name>
+  	<url-pattern>/articleEdit</url-pattern>
   </servlet-mapping>
 
 </web-app>

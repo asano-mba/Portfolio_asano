@@ -63,7 +63,7 @@ public class DAO {
 
 		try{
 			//SQL文の指定に使う要素を格納する配列の定義
-			String[] whereTables = {UserInfoBean.LOGIN_ID_COLUMN,UserInfoBean.LOGIN_PASS_COLUMN};
+			String[] whereTables = {UserInfoBean.EMAIL_ADDRESS_COLUMN,UserInfoBean.LOGIN_PASS_COLUMN};
 			String[] whereValues = {user,pass};
 
 			//上記の配列を使用しSQLの呼び出し
@@ -117,7 +117,7 @@ public class DAO {
 			return true;
 		}
 		//文章を表示
-		System.out.println("password and confirmation doest match->pass:" + newPass + "/confirmation:" + newPassConfirmation);
+		//System.out.println("password and confirmation doest match->pass:" + newPass + "/confirmation:" + newPassConfirmation);
 
 		//falseを返す
 		return false;
@@ -159,7 +159,6 @@ public class DAO {
 					pib[i].setPostTitle(result.getString(PostInfoBean.POST_TITLE_COLUMN));
 					pib[i].setPostContents(result.getString(PostInfoBean.POST_CONTENTS_COLUMN));
 					pib[i].setPostUserId(result.getInt(PostInfoBean.POST_USER_ID_COLUMN));
-					pib[i].setPostCategory(result.getString(PostInfoBean.POST_CATEGORY_COLUMN));
 					pib[i].setPostImgPath(result.getString(PostInfoBean.POST_IMAGE_COLUMN));
 					pib[i].setBoardId(result.getInt(PostInfoBean.BOARD_ID_COLUMN));
 					pib[i].setPostUserName(SelectMember(userId).getUserName());
@@ -330,7 +329,6 @@ public class DAO {
 					pib[i].setPostTitle(result.getString(PostInfoBean.POST_TITLE_COLUMN));
 					pib[i].setPostContents(result.getString(PostInfoBean.POST_CONTENTS_COLUMN));
 					pib[i].setPostUserId(result.getInt(PostInfoBean.POST_USER_ID_COLUMN));
-					pib[i].setPostCategory(result.getString(PostInfoBean.POST_CATEGORY_COLUMN));
 					pib[i].setPostImgPath(result.getString(PostInfoBean.POST_IMAGE_COLUMN));
 					pib[i].setBoardId(result.getInt(PostInfoBean.BOARD_ID_COLUMN));
 				}
@@ -380,10 +378,10 @@ public class DAO {
 			//MySQLに接続し、SQL文作成するメソッド呼び出し(Post_Infoにレコード追加)
 			InsertQuery(DefineDatabase.POST_INFO_TABLE, new String[] {PostInfoBean.POST_DATE_COLUMN,
 					    PostInfoBean.POST_TITLE_COLUMN, PostInfoBean.POST_CONTENTS_COLUMN,
-					    PostInfoBean.POST_USER_ID_COLUMN, PostInfoBean.POST_CATEGORY_COLUMN,
-					    PostInfoBean.POST_IMAGE_COLUMN, PostInfoBean.BOARD_ID_COLUMN}, new String[] {
+					    PostInfoBean.POST_USER_ID_COLUMN, PostInfoBean.POST_IMAGE_COLUMN,
+					    PostInfoBean.BOARD_ID_COLUMN}, new String[] {
 					    postInfoBean.getPostDate(), postInfoBean.getPostTitle(), postInfoBean.getPostContents(),
-					    postUserId, postInfoBean.getPostCategory(), postInfoBean.getPostImgPath(), boardId});
+					    postUserId, postInfoBean.getPostImgPath(), boardId});
 			stmt.close();
 			return true;
 		} catch (SQLException e) {
@@ -451,7 +449,7 @@ public class DAO {
 			}else if(choice.equals("comment")) {
 				query = "SELECT * FROM Comment_Info WHERE Comment_Chain = '"+id+"'";
 			}else {
-				System.out.println("第二引数にはpostかcommentをいれてください");
+				//System.out.println("第二引数にはpostかcommentをいれてください");
 				}
 			ResultSet rs =  stmt.executeQuery(query);
 
@@ -1104,7 +1102,7 @@ public class DAO {
 				GivePermission(b.getBoardId(), userId);
 			} else {
 				//rs.next()がfalse場合（検索がヒットしてないので念のためコンソールに表示する）
-				System.out.println("insertが失敗している可能性があります。");
+				//System.out.println("insertが失敗している可能性があります。");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -1468,21 +1466,34 @@ public class DAO {
 	/*メソッド名:DeleteBoard()
 	 *引数:int boardId
 	 *戻り値:無し
-	 *処理:Board_Infoに掲示板管理IDを指定してSQL分を発行し、掲示板の情報を削除する。
+	 *処理:Board_Member_Infoに掲示板管理IDを指定してSQL分を発行し、掲示板のメンバー情報を削除する。
+	 *     Board_Permission_Infoに掲示板管理IDを指定してSQL分を発行し、掲示板の権限情報を削除する。
+	 *     Board_Infoに掲示板管理IDを指定してSQL分を発行し、掲示板の情報を削除する。
 	*/
 
-	public BoardInfoBean DeleteBoard(int boardId) throws ClassNotFoundException {
+	public BoardInfoBean DeleteBoard(int boardId) {
 		try {
 			//MySQLに接続する
 			Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection(url + dbName, user, pass);
 			stmt = conn.createStatement();
 
-			//SQL文作成
+        	//Board_Member_Infoに対して発行するSQL文を作成
+        	String querym = "DELETE FROM Board_Member_Info WHERE Board_ID="+boardId;
+        	stmt.executeUpdate(querym);
+
+        	//Board_Permission_Infoに対して発行するSQL文を作成
+        	String queryp = "DELETE FROM Board_Permission_Info WHERE Board_ID="+boardId;
+        	stmt.executeUpdate(queryp);
+
+			//Board_Infoに対して発行するSQL文を作成
         	String query = "DELETE FROM Board_Info WHERE Board_ID="+boardId;
-        	int dele = stmt.executeUpdate(query);
+			//int dele =
+        	stmt.executeUpdate(query);
 
 		}catch(SQLException e){
+			e.printStackTrace();
+		}catch(ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 		//戻り値はないのでnullで返す
@@ -1718,18 +1729,17 @@ public class DAO {
 			//記事を更新するためのSQL文を発行する
 			//Post_IDとPost_User_IDは更新しない
 			String query = "UPDATE Post_Info SET Post_Date = ?, Post_Title = ?, "
-					+ "Post_Contents = ?, Post_Category = ?, Post_Image = ?, Board_ID = ? "
+					+ "Post_Contents = ?, Post_Image = ?, Board_ID = ? "
 					+ "WHERE Post_ID = ?";
 			pst = conn.prepareStatement(query);
 			//1～6はSETする値
 			pst.setString(1, b.getPostDate());
 			pst.setString(2, b.getPostTitle());
 			pst.setString(3, b.getPostContents());
-			pst.setString(4, b.getPostCategory());
-			pst.setString(5, b.getPostImgPath());
-			pst.setInt(6, b.getBoardId());
+			pst.setString(4, b.getPostImgPath());
+			pst.setInt(5, b.getBoardId());
 			//7はWHERE条件でつかう値
-			pst.setInt(7, b.getPostId());
+			pst.setInt(6, b.getPostId());
 			pst.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -2009,6 +2019,129 @@ public class DAO {
 		return null;
 	}
 
+	/* ㊾掲示板に参加するメンバーの取得
+	 * メソッド名：GetBoardMembers()
+	 * 引数      ：int boardId
+	 * 戻り値    ：ArrayList<UserInfoBean> list
+	 * 処理      ：サブクエリを使い、DB(Board_Member_Info)に引数(掲示板ID)を指定してユーザーIDを取得し、
+	 *             DB(User_Info)に取得したユーザーIDを代入してSQL文を発行し、ユーザーID,ユーザー名,イメージパスを取得する
+	 */
+	public ArrayList<UserInfoBean> GetBoardMembers(int boardId) {
+		//戻り値として返すようの配列を定義
+		ArrayList<UserInfoBean> list = new ArrayList<UserInfoBean>();
+		//DBから取得した情報を格納するようのUserInfoBeanを宣言
+		UserInfoBean ub;
+		if(conn == null) {
+			try {
+				//DBに接続する
+				ConnectToDB(dbName);
+			}
+			catch(SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		try {
+			//サブクエリを使い、掲示板に所属しているユーザー情報を取得するためのSQL文を発行する
+			String query = "SELECT * FROM User_Info WHERE User_ID IN (SELECT User_ID FROM Board_Member_Info WHERE Board_ID = ?)";
+			pst = conn.prepareStatement(query);
+			//?に引数（掲示板ID）を代入
+			pst.setInt(1, boardId);
+			ResultSet rs = pst.executeQuery();
+
+			while(rs.next()) {
+				ub = new UserInfoBean();
+				ub.setUserID(rs.getInt(UserInfoBean.USER_ID_COLUMN));
+				ub.setUserName(rs.getString(UserInfoBean.USER_NAME_COLUMN));
+				ub.setProfileImgPath(rs.getString(UserInfoBean.PROFILE_IMAGE_COLUMN));
+				//ユーザーID,ユーザー名,イメージパスのみを入れたBeanをリストに追加する
+				list.add(ub);
+			}
+			//データ格納したリストを返す
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		//問題があったらnullを返す
+		return null;
+	}
+
+	/*㊿記事情報を取得
+	 *メソッド名：GetPost()
+	 * 引数      ：int postId
+	 * 戻り値    ：PostInfoBean postBean
+	 * 処理      ：引数(記事ID)を代入したSQL文を発行し、DB(Post_Info)から記事情報を取得
+	 */
+		public PostInfoBean GetPost(int postId) {
+			//戻り値として返すようの配列を定義
+			PostInfoBean postBean=new PostInfoBean();
+			try {
+				//MySQLに接続する
+				Class.forName("com.mysql.jdbc.Driver");
+				conn = DriverManager.getConnection(url+dbName, user, pass);
+				stmt = conn.createStatement();
+				//SQL文作成
+				String query = "SELECT * FROM Post_Info WHERE Post_ID = '"+postId+"'";
+				ResultSet rs =  stmt.executeQuery(query);
+				//上記SQL文で指定したレコードの数分while文を回す
+				while(rs.next()) {
+					//各種情報をBeanにsetterメソッドを使い、格納する
+					postBean.setPostId(rs.getInt("Post_ID"));
+					postBean.setPostDate(rs.getString("Post_Date"));
+					postBean.setPostTitle(rs.getString("Post_Title"));
+					postBean.setPostContents(rs.getString("Post_Contents"));
+					postBean.setPostUserId(rs.getInt("Post_User_ID"));
+					postBean.setPostImgPath(rs.getString("Post_Image"));
+					postBean.setBoardId(rs.getInt("Board_ID"));
+				}
+				//下記catchはエラーハンドリング用
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			//postInfo型のbeanを返す
+			return postBean;
+		}
+
+
+		/*[51]コメント情報を取得
+		 *メソッド名：GetComment()
+		 * 引数      ：int commentId
+		 * 戻り値    ：CommentInfoBean commentBean
+		 * 処理      ：引数(コメントID)を代入したSQL文を発行し、DB(Comment_Info)からコメント情報を取得
+		 */
+			public CommentInfoBean GetComment(int commentId) {
+				//戻り値として返すようの配列を定義
+				CommentInfoBean commentBean=new CommentInfoBean();
+				try {
+					//MySQLに接続する
+					Class.forName("com.mysql.jdbc.Driver");
+					conn = DriverManager.getConnection(url+dbName, user, pass);
+					stmt = conn.createStatement();
+					//SQL文作成
+					String query = "SELECT * FROM Comment_Info WHERE Comment_ID = '"+commentId+"'";
+					ResultSet rs =  stmt.executeQuery(query);
+					//上記SQL文で指定したレコードの数分while文を回す
+					while(rs.next()) {
+						//各種情報をBeanにsetterメソッドを使い、格納する
+						commentBean.setCommentId(rs.getInt("Comment_ID"));
+						commentBean.setCommentDate(rs.getString("Comment_Date"));
+						commentBean.setCommentUserId(rs.getInt("Comment_User_ID"));
+						commentBean.setCommentContents(rs.getString("Comment_Contents"));
+						commentBean.setPostId(rs.getInt("Post_ID"));
+						commentBean.setCommentChain(rs.getInt("Comment_Chain"));
+					}
+					//下記catchはエラーハンドリング用
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				//postInfo型のbeanを返す
+				return commentBean;
+			}
+
+
 //--------------以下SQL基本構文(select、insert、update、delete)のメソッド。---------
 
 	/*SELECT文 条件なしオーバーロード
@@ -2072,7 +2205,7 @@ public class DAO {
 			query += whereColumn[i] + " = '" + whereValue[i]+"' ";
 		}
 		query += ";";
-		System.out.println(query);
+		//System.out.println(query);
 		try {
 			//SQL文を作成
 			stmt = conn.createStatement();
@@ -2121,7 +2254,7 @@ public class DAO {
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}
-		System.out.println(query);
+		//System.out.println(query);
 		//作成したSQL文を返す
 		return result;
 	}
@@ -2165,7 +2298,7 @@ public class DAO {
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}
-		System.out.println(query);
+		//System.out.println(query);
 		//作成したSQL文を返す
 		return result;
 	}
@@ -2411,7 +2544,7 @@ public class DAO {
 		query += ");";										//"INSERT INTO " + tablename + "( +columns[i]+ ", "～")  VALUES ('"+values[i]+"' , '"～");"
 
 		//INSERT文を標準出力
-		System.out.println(query);
+		//System.out.println(query);
 
 		try {
 			//SQL(INSERT)文の出力

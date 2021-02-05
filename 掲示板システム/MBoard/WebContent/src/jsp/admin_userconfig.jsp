@@ -9,8 +9,7 @@
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
-<script src="src/js/admin_userconfig.js"></script>
-
+	<script src="src/js/admin_userconfig.js"></script>
 <body>
 	<!-- <a href="" class="backbtn js-modal-open"> 戻る </a> -->
 	<form action="src/jsp/admin_top.jsp" method="post">
@@ -54,7 +53,12 @@
 			<%-- 検索後の結果をここに表示する --%>
 			<div class="search-result"id="search-result">
 				<div id="search-result__list"></div>
+
+	    		<div id="noResult">
+					<p id="none">該当しませんでした</p>
+				</div>
 	    	</div>
+
 		</div>
 
 		<!-- <div class="target-area"id="target-area"> -->

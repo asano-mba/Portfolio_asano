@@ -1,12 +1,24 @@
 @charset "UTF-8";
 
+body {
+	font-family:'Noto Sans JP';
+}
+
+/* 大タイトル */
+.big-title {
+	position: fixed;
+	left: 80px;
+	padding-left: 10px;
+	font-size:35px;
+}
+
 .mypage_content {
 	background:white;
 	height:100vh;
 	background-image: url("../img/mb_q_editillust.png");
 	background-repeat: no-repeat;
 	background-attachment: fixed;
-	background-position: 6% -3%;
+	background-position: 6% 80px;
 	display:flex;
 	align-items:flex-start;
 	justify-content:center;
@@ -17,9 +29,11 @@
 	width:700px;
 }
 
+/* 小タイトル */
 .page-title {
+	margin: 0;
 	margin-top:40px;
-	font-size:30px;
+	font-size:24px;
 	text-align:left;
 }
 
@@ -38,7 +52,7 @@ textarea{
 
 .post-form{
 	margin-top:0px;
-	width:98%;
+	width:70%;
 	height:50px;
 	border:none;
 	background-color:transparent;
@@ -75,8 +89,11 @@ textarea{
 
 }
 
-.post-form {
+.post-titlebar {
 	border-bottom:1px solid;
+	display: inline-flex;
+	width: 100%;
+	height:50px;
 }
 
 
@@ -109,4 +126,69 @@ textarea{
 	color:#ff9100;
 	border:2px solid #ff9100;
 	box-sizing:border-box;
+}
+
+
+/* ボタンの枠を削除 */
+input[type="button"]:focus, input[type="submit"]:focus {
+	outline: none;
+}
+
+
+/* 						↓ポップアップ						*/
+.modal{
+    display: none;
+    position:relative;
+	bottom:5px;
+	right:40px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+.modal__bg{
+    background: rgba(0,0,0,0.8);
+    height: 100vh;
+    position: absolute;
+    width: 100%;
+}
+.modal__content{
+    background: #fff;
+    left: 50%;
+    padding: 40px;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    border-radius:8px;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+}
+
+.modal__content h2 {
+	width:100%;
+	text-align:center;
+}
+
+.modal_form {
+	float:left;
+}
+
+.modal_cancel, .modal_ok {
+	width:150px;
+	height:40px;
+	border-radius:8px;
+	box-sizing:border-box;
+	background:#fff;
+	border:2px solid #ff9100;
+	color:#ff9100;
+	outline:none;
+	font-weight:bold;
+}
+
+.modal_ok {
+	margin-left:30px;
+	background:#ff9100;
+	color:#fff;
+	border:none;
 }
